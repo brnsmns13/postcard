@@ -16,11 +16,6 @@ gmail = build('gmail', 'v1')
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello, World!!!')
-
-
-class TestPage(webapp2.RequestHandler):
-    def get(self):
         self.response.write(
             """
             <html><head>
@@ -53,16 +48,17 @@ class GetMail(webapp2.RequestHandler):
 
     @decorator.oauth_required
     def get(self):
-        logging.info(decorator.callback_path)
         if decorator.has_credentials():
             self.response.out.write('Authed')
+            messages = gmail.messages().list().execute(http=decorator.http())
+            for m in messages:
+                self.response.out.write(m)
         else:
             self.response.out.write('Not authed')
 
 
 application = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/test', TestPage),
     ('/auth', Auth),
     ('/mail', GetMail),
     (decorator.callback_path, decorator.callback_handler()),

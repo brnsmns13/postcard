@@ -61,7 +61,7 @@ class SerializableMixin(object):
         return output
 
 
-class Board(ndb.Model):
+class Board(ndb.Model, SerializableMixin):
     name = ndb.StringProperty()
     tags = ndb.StringProperty(repeated=True)
     panels = ndb.KeyProperty(repeated=True)
@@ -74,13 +74,16 @@ class Card(ndb.Model, SerializableMixin):
     content = ndb.TextProperty()
     tags = ndb.StringProperty(repeated=True)
     comments = ndb.StringProperty(repeated=True)
+    user_id = ndb.StringProperty(required=True)
 
 
-class Panel(ndb.Model):
+class Panel(ndb.Model, SerializableMixin):
     name = ndb.StringProperty()
+    user_id = ndb.StringProperty(required=True)
 
 
-class Filter(ndb.Model):
+class Filter(ndb.Model, SerializableMixin):
     f_type = ndb.StringProperty()
     f_string = ndb.StringProperty()
     tag = ndb.StringProperty()
+    user_id = ndb.StringProperty(required=True)

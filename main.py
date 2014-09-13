@@ -5,6 +5,7 @@ import webapp2
 import os
 
 from apiclient.discovery import build
+from google.appengine.api import users
 from google.appengine.ext import ndb
 from oauth2client.appengine import OAuth2Decorator
 
@@ -34,7 +35,16 @@ class PostBox(webapp2.RequestHandler):
 class GetMail(webapp2.RequestHandler):
     @decorator.oauth_required
     def get(self):
-        self.response.out.write('<b>Authed</b>')
+        user = users.get_current_user()
+        if not user:
+            greeting = ('<a href="%s">Sign in or register</a>.' %
+                        users.create_login_url('/'))
+            self.response.out.write('<html><body>%s</body></html>' % greeting)
+            return
+
+        greeting = ('Welcome, %s! (<a href="%s">sign out</a>)' %
+                    (user.nickname(), users.create_logout_url('/')))
+        self.response.out.write('<b>Authed</b>' + greeting)
         http = decorator.http()
         messages = service.users().messages().list(
             userId='me',
@@ -84,8 +94,6 @@ class GetMail(webapp2.RequestHandler):
         return content
 
     def read_b64(self, data):
-        # if not data.endswith('=='):
-        #     data += '=='
         return base64.urlsafe_b64decode(data.encode('utf-8')) or ''
 
 

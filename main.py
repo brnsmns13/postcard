@@ -12,7 +12,12 @@ class PostBox(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render())
 
+class Sound(webapp2.RequestHandler):
+    def get(self):
+        template = JINJA_ENVIRONMENT.get_template('AudioStuff/WebServer/AudioRecording.html')
+        self.response.write(template.render())
 
 application = webapp2.WSGIApplication([
-    ('/', PostBox)
+    ('/', PostBox),
+    ('/sound', Sound)
 ], debug=True)

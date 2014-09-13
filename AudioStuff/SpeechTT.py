@@ -1,12 +1,13 @@
 import speech_recognition as sr
-r = sr.Recognizer()
-with sr.WavFile("test.wav") as source:              # use "test.wav" as the audio source
-    audio = r.record(source)                        # extract audio data from the file
 
-try:
-    list = r.recognize(audio,True)                  # generate a list of possible transcriptions
-    print("Possible transcriptions:")
-    for prediction in list:
-        print(" " + prediction["text"] + " (" + str(prediction["confidence"]*100) + "%)")
-except LookupError:                                 # speech is unintelligible
-    print("Could not understand audio")
+def getText(file1):
+	r = sr.Recognizer()
+	with sr.WavFile(file1) as source:
+	    audio = r.record(source)                        # extract audio data from the file
+
+	try:
+	    list = r.recognize(audio,True)
+	    for prediction in list:
+	        return (prediction["text"])
+	except LookupError:                                 # speech is unintelligible
+	    return("Could not understand audio")

@@ -8,7 +8,7 @@ var Navbar = React.createClass({
     return (
       <div className="container-fluid">
           <div className="header">
-              <h3 className="brand">PostBox</h3>
+              <h3 className="brand">PostCard</h3>
           </div>
       </div>
     );

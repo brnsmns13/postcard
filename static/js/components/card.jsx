@@ -1,14 +1,17 @@
 /** @jsx React.DOM */
 'use strict';
 
-var React = window.React = require('react');
+var React = window.React = require('react'),
+    Button = require('react-bootstrap/Button'),
+    ModalTrigger = require('react-bootstrap/ModalTrigger'),
+    PostCardModal = require('./cardview.jsx');
 
 var Card = React.createClass({
   render: function() {
     return (
-      <div className="button-group post-card">
-        <div className="btn btn-default" type="button">{this.props.text}</div>
-      </div>
+        <ModalTrigger modal={<PostCardModal/>}>
+            <Button className="post-card" bsSize="large">Block level button</Button>
+        </ModalTrigger>
     );
   }
 });

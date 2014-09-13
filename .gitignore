@@ -1,3 +1,13 @@
 *~
 *.pyc
 **/build/*
+
+# Dotfiles
+.git
+*.pyc
+.sass-cache
+
+# Externals
+node_modules
+bower_components
+dist

@@ -1,11 +1,22 @@
+import logging
 import webapp2
 
 from google.appengine.api import users
+from apiclient.discovery import build
+from oauth2client.appengine import OAuth2Decorator
+
+
+decorator = OAuth2Decorator(
+    client_id='34807265940-t06q5hjq3cepa2f0s38lhsc90ose631g.apps.googleusercontent.com',
+    client_secret='SvnqyVoRJv8soNbcAuuv_OQ7',
+    scope='https://www.googleapis.com/auth/gmail.modify')
+
+gmail = build('gmail', 'v1')
 
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello, World')
+        self.response.write('Hello, World!!!')
 
 
 class TestPage(webapp2.RequestHandler):
@@ -38,8 +49,22 @@ class Auth(webapp2.RequestHandler):
         self.response.out.write('<html><body>%s</body></html>' % greeting)
 
 
+class GetMail(webapp2.RequestHandler):
+
+    @decorator.oauth_required
+    def get(self):
+        logging.info(decorator.callback_path)
+        if decorator.has_credentials():
+            self.response.out.write('Authed')
+        else:
+            self.response.out.write('Not authed')
+
+
 application = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/test', TestPage),
-    ('/auth', Auth)
+    ('/auth', Auth),
+    ('/mail', GetMail),
+    (decorator.callback_path, decorator.callback_handler()),
+
 ], debug=True)

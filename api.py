@@ -4,6 +4,18 @@ from google.appengine.api import users
 import models
 
 
+def createDefaultBoard(user):
+    email = user.email()
+    board = models.Board(id=email, name="Gmail")
+    panels = []
+    panels.append(str(models.Panel(name="To Do", user_id=email).put().id()))
+    panels.append(str(models.Panel(name="In Progress", user_id=email).put().id()))
+    panels.append(str(models.Panel(name="Done", user_id=email).put().id()))
+    board.panels = panels
+    board.put()
+    return board
+
+
 class BoardHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
@@ -13,21 +25,8 @@ class BoardHandler(webapp2.RequestHandler):
         email = user.email()
         board = models.Board.get_by_id(email)
         if not board:
-            board = models.Board(id=email)
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(board.to_json_dict()))
+            board = createDefaultBoard(user)
 
-
-class PanelHandler(webapp2.RequestHandler):
-    def get(self):
-        user = users.get_current_user()
-        if not user:
-            self.response.set_status(403)
-            return
-        email = user.email()
-        board = models.Board.get_by_id(email)
-        if not board:
-            board = models.Board(id=email)
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(board.to_json_dict()))
 

@@ -15,6 +15,12 @@ $icon-font-path: "/node_modules/bootstrap-sass-official/assets/fonts/";
   }
 }
 
+.tilt {
+    transform: rotate(3deg);
+    -moz-transform: rotate(3deg);
+    -webkit-transform: rotate(3deg);
+}
+
 .btn {width:100%;}
 
 .post-card {
@@ -23,6 +29,11 @@ $icon-font-path: "/node_modules/bootstrap-sass-official/assets/fonts/";
     white-space: normal;
 }
 
+.placeholder {
+    border: 1px dotted black;
+    margin: 0 1em 1em 0;
+    height: 50px;
+}
 
 /* Space out content a bit */
 body {

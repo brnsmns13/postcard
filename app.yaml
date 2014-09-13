@@ -5,20 +5,13 @@ api_version: 1
 threadsafe: false
 
 handlers:
-- url: /css
-  static_dir: css
-
-- url: /js
-  static_dir: js
-
-- url: /build
-  static_dir: build
-
-- url: /api/.*
-  script: main.application
+- url: /dist
+  static_dir: dist
+# - url: /api/.*
+#   script: main.application
 
 - url: /.*
-  script: helloworld.application
+  script: main.application
 
 libraries:
 - name: webapp2

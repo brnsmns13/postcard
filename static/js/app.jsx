@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 'use strict';
 
-var React = require('react'),
+var React = window.React = require('react'),
     mountNode = document.getElementById('content');
 
 var App = React.createClass({

@@ -1,7 +1,11 @@
 import json
 
+import models
+
+
 def get_tags(j):
-    filters = [{'type':'From', 'param':'@twitter.com', 'tag':'twitter'}, {'type':'To', 'param':'simkev2@gmail.com', 'tag':'todo'}]
+    # filters = [{'type':'From', 'param':'@twitter.com', 'tag':'twitter'}, {'type':'To', 'param':'simkev2@gmail.com', 'tag':'todo'}]
+    filters = models.Filter.query().get()
     tag_list = []
     for i in j['payload']['headers']:
         for f in filters:

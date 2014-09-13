@@ -14,11 +14,8 @@ handlers:
 - url: /build
   static_dir: build
 
-- url: /api/.*
-  script: main.application
-
 - url: /.*
-  script: helloworld.application
+  script: main.application
 
 libraries:
 - name: webapp2

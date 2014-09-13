@@ -3,7 +3,22 @@ import webapp2
 from google.appengine.api import users
 import models
 
+
 class BoardHandler(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        if not user:
+            self.response.set_status(403)
+            return
+        email = user.email()
+        board = models.Board.get_by_id(email)
+        if not board:
+            board = models.Board(id=email)
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps(board.to_json_dict()))
+
+
+class PanelHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if not user:
@@ -19,8 +34,14 @@ class BoardHandler(webapp2.RequestHandler):
 
 class CardHandler(webapp2.RequestHandler):
     def get(self):
+        user = users.get_current_user()
+        if not user:
+            self.response.set_status(403)
+            return
+
+        cards = models.Card.query(models.Card.user_id == user.email()).fetch(50)
         output = {}
-        for card in models.Card.query().fetch(30):
+        for card in cards:
             card_json = card.to_json_dict()
             output[str(card.key)] = card_json
 

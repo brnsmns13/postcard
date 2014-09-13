@@ -58,9 +58,8 @@ class GetMail(webapp2.RequestHandler):
             payload = e['payload']
 
             subject = self.get_message_subject(payload)
-            logging.info('Subject: ' + subject)
             content = self.get_message_content(payload)
-            logging.info('Content: ' + content)
+            tags = self.get_message_tags(payload)
             card = models.Card(board_id=ndb.Key('Board', 'test'))
             card.panel_id = ndb.Key('Panel', 'test')
             card.subject = subject
@@ -73,6 +72,9 @@ class GetMail(webapp2.RequestHandler):
         for h in payload['headers']:
             if h.get('name') == 'Subject':
                 return h.get('value')
+
+    def get_message_tags(self, payload):
+        pass
 
     def get_message_content(self, payload):
         content = ''
@@ -109,7 +111,7 @@ class CardsAPI(webapp2.RequestHandler):
 
 endpoints = [
     ('/', PostBox),
-    ('/mail', GetMail),
+    ('/generate_user_cards', GetMail),
     ('/cards', CardsAPI),
     (decorator.callback_path, decorator.callback_handler()),
 ]

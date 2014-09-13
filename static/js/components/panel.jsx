@@ -6,17 +6,22 @@ var React = window.React = require('react'),
     Card = require('./card.jsx');
 
 var PostCardPanel = React.createClass({
-  render: function() {
-    return (
-        <div className="col-md-3">
-            <Panel header={this.props.title}>
-                <Card text={'test1'}/>
-                <Card text={'test2'}/>
-                <Card text={'test3'}/>
-            </Panel>
-        </div>
-    );
-  }
+    getInitialState: function() {
+        return {data: this.props.data};
+    },
+    render: function() {
+        var cards = {};
+        this.state.data.forEach(function(data) {
+            cards['card-'+data.id] = <Card text={data.text}/>
+        });
+        return (
+            <div className="col-md-3">
+                <Panel header={this.props.title}>
+                    {cards}
+                </Panel>
+            </div>
+        );
+    }
 });
 
 module.exports = PostCardPanel;

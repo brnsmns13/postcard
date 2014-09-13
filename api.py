@@ -39,7 +39,7 @@ class PanelHandler(webapp2.RequestHandler):
             self.response.set_status(403)
             return
         board = models.Board.get_by_id(user.email())
-        panels = ndb.get_multi(board.panels)
+        panels = [models.Panel.get_by_id(i) for i in board.panels]
         out_panels = []
         for p in panels:
             panel_json = p.to_json_dict()
@@ -66,6 +66,6 @@ class CardHandler(webapp2.RequestHandler):
 
 endpoints = [
     ('/api/boards', BoardHandler),
-    ('/api/panels', PanelHandler)
+    ('/api/panels', PanelHandler),
     ('/api/cards', CardHandler)
 ]

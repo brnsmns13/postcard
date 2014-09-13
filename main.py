@@ -3,6 +3,7 @@ import logging
 import jinja2
 import webapp2
 import os
+import json
 
 from apiclient.discovery import build
 from google.appengine.api import users
@@ -74,7 +75,14 @@ class GetMail(webapp2.RequestHandler):
                 return h.get('value')
 
     def get_message_tags(self, payload):
-        pass
+        filters = models.Filter.query().get()
+        tag_list = []
+        for i in payload['headers']:
+            for f in filters:
+                if (i['name'] == f['type']):
+                    tag_list.append(f['tag'])
+
+        return tag_list
 
     def get_message_content(self, payload):
         content = ''

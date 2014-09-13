@@ -1,6 +1,6 @@
-$icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/";
+$icon-font-path: "/node_modules/bootstrap-sass-official/assets/fonts/";
 
-@import "bootstrap-sass-official/assets/stylesheets/bootstrap";
+@import "bootstrap-sass/assets/stylesheets/bootstrap";
 
 .browsehappy {
     margin: 0.2em 0;
@@ -9,12 +9,33 @@ $icon-font-path: "/bower_components/bootstrap-sass-official/assets/fonts/";
     padding: 0.2em 0;
 }
 
+@media (min-width: 992px) {
+  .panel > .panel-body {
+    height: 900px;
+  }
+}
+
+
 /* Space out content a bit */
 body {
     padding-top: 20px;
     padding-bottom: 20px;
+    background-color: #5677fc;
 }
 
+.panel {
+    height:100%;
+    background-color: #eeeeee;
+}
+
+.brand {
+    color: #eeeeee;
+}
+
+.test {
+    height: 100%;
+    overflow: auto;
+}
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
 .marketing,

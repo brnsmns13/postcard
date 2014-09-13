@@ -8,9 +8,10 @@ class Board(ndb.Model):
 
 
 class Card(ndb.Model):
-    board_id = ndb.KeyProperty()
+    board_id = ndb.KeyProperty(required=True)
+    panel_id = ndb.KeyProperty(required=True)
     subject = ndb.StringProperty()
-    content = ndb.StringProperty()
+    content = ndb.TextProperty()
     tags = ndb.StringProperty(repeated=True)
     comments = ndb.StringProperty(repeated=True)
 
@@ -21,4 +22,5 @@ class Panel(ndb.Model):
 
 class Filter(ndb.Model):
     f_type = ndb.StringProperty()
+    f_string = ndb.StringProperty()
     tag = ndb.StringProperty()

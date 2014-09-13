@@ -65,6 +65,7 @@ class GetMail(webapp2.RequestHandler):
             card.panel_id = ndb.Key('Panel', 'test')
             card.subject = subject
             card.content = content
+            card.user_id = user.email()
             card.put()
         self.response.out.write(len(messages))
 
@@ -100,7 +101,8 @@ class GetMail(webapp2.RequestHandler):
 class CardsAPI(webapp2.RequestHandler):
     @decorator.oauth_required
     def get(self):
-        cards = models.Card.query().fetch(20)
+        user = users.get_current_user()
+        cards = models.Card.query(models.Card.user_id == user.email()).fetch(20)
         for c in cards:
             self.response.out.write('<h3>%s</h3>' % c.subject)
             self.response.out.write('<p>%s</p>' % c.content)

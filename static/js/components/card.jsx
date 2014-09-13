@@ -10,7 +10,7 @@ var Card = React.createClass({
   render: function() {
     return (
         <ModalTrigger modal={<PostCardModal/>}>
-            <Button className="post-card" bsSize="large">Block level button</Button>
+            <Button className="post-card" bsSize="large">{this.props.text}</Button>
         </ModalTrigger>
     );
   }

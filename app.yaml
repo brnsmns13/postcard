@@ -14,9 +14,14 @@ handlers:
 - url: /build
   static_dir: build
 
+- url: /api/.*
+  script: main.application
+
 - url: /.*
   script: helloworld.application
 
 libraries:
 - name: webapp2
+  version: latest
+- name: jinja2
   version: latest

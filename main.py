@@ -15,5 +15,5 @@ class PostBox(webapp2.RequestHandler):
 
 
 application = webapp2.WSGIApplication([
-    ('/', PostBox)
+    ('/post', PostBox)
     ], debug=True)

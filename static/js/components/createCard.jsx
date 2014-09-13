@@ -3,6 +3,7 @@ var React = window.React = require('react'),
     Button = require('react-bootstrap/Button'),
     Modal = require('react-bootstrap/Modal');
 var CreateCardModal = React.createClass({
+
   render: function() {
     return this.transferPropsTo(
         <Modal title="Modal heading" animation={false}>

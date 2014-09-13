@@ -11,10 +11,29 @@ var App = React.createClass({
     return (
         <div>
           <Navbar/>
-          <Board/>
+          <Board data={this.props.items}/>
         </div>
     );
   }
 });
 
-React.renderComponent(<App />, mountNode);
+var ITEMS = [
+    {
+        title: "ToDo",
+        data:[
+            {text: "From: Eric Larssen\r Subject: This is a test."},
+            {text: "Two"},
+            {text: "Three"}
+        ],
+    },
+    {
+        title: "In Progress",
+        data:[{text: "Four"}]
+    },
+    {
+        title: "Done",
+        data:[]
+    }
+];
+
+React.renderComponent(<App items={ITEMS}/>, mountNode);

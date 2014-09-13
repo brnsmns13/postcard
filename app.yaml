@@ -5,6 +5,7 @@ api_version: 1
 threadsafe: false
 
 handlers:
+
 - url: /css
   static_dir: css
 
@@ -13,6 +14,9 @@ handlers:
 
 - url: /build
   static_dir: build
+
+- url: /dist
+  static_dir: dist
 
 - url: /.*
   script: main.application

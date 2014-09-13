@@ -7,13 +7,20 @@ var React = window.React = require('react'),
     PostCardModal = require('./cardview.jsx');
 
 var Card = React.createClass({
-  render: function() {
-    return (
-        <ModalTrigger modal={<PostCardModal/>}>
-            <Button className="post-card" bsSize="large">{this.props.text}</Button>
-        </ModalTrigger>
-    );
-  }
+    drag: function(ev) {
+        ev.dataTransfer.setData("draggedItem", JSON.stringify(this.props.item));
+        ev.dataTransfer.setData("sourcePanel", JSON.stringify(this.props.panel));
+        console.log(this.props.panel);
+    },
+    render: function() {
+        return (
+            <div draggable="true" onDragStart={this.drag}>
+                <ModalTrigger modal={<PostCardModal/>}>
+                    <Button className="post-card" bsSize="large">{this.props.item}</Button>
+                </ModalTrigger>
+            </div>
+        );
+    }
 });
 
 module.exports = Card;

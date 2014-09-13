@@ -11,6 +11,7 @@ from google.appengine.ext import ndb
 from oauth2client.appengine import OAuth2Decorator
 
 import models
+from api import createDefaultBoard
 from api import endpoints as api_endpoints
 
 decorator = OAuth2Decorator(
@@ -46,6 +47,10 @@ class GetMail(webapp2.RequestHandler):
         greeting = ('Welcome, %s! (<a href="%s">sign out</a>)' %
                     (user.nickname(), users.create_logout_url('/')))
         self.response.out.write('<b>Authed</b>' + greeting)
+        board = models.Board.get_by_id(user.email())
+        if not board:
+            board = createDefaultBoard(user)
+
         http = decorator.http()
         messages = service.users().messages().list(
             userId='me',
@@ -65,6 +70,7 @@ class GetMail(webapp2.RequestHandler):
             card.panel_id = ndb.Key('Panel', 'test')
             card.subject = subject
             card.content = content
+            card.tags = tags
             card.user_id = user.email()
             card.put()
         self.response.out.write(len(messages))

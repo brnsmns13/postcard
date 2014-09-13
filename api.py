@@ -1,6 +1,7 @@
 import json
 import webapp2
 from google.appengine.api import users
+from google.appengine.ext import ndb
 import models
 
 
@@ -31,6 +32,22 @@ class BoardHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps(board.to_json_dict()))
 
 
+class PanelHandler(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        if not user:
+            self.response.set_status(403)
+            return
+        board = models.Board.get_by_id(user.email())
+        panels = ndb.get_multi(board.panels)
+        out_panels = []
+        for p in panels:
+            panel_json = p.to_json_dict()
+            out_panels.append(panel_json)
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps({'panels': out_panels}))
+
+
 class CardHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
@@ -49,5 +66,6 @@ class CardHandler(webapp2.RequestHandler):
 
 endpoints = [
     ('/api/boards', BoardHandler),
+    ('/api/panels', PanelHandler)
     ('/api/cards', CardHandler)
 ]

@@ -2,14 +2,17 @@
 'use strict';
 
 var React = window.React = require('react'),
-    mountNode = document.getElementById('content');
+    Navbar = require('./components/navbar.jsx'),
+    Board = require('./components/board.jsx'),
+    mountNode = document.getElementById('postBox');
 
 var App = React.createClass({
   render: function() {
     return (
-      <div>
-        <p>Hello World</p>
-      </div>
+        <div>
+          <Navbar/>
+          <Board/>
+        </div>
     );
   }
 });

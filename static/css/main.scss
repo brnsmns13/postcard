@@ -13,6 +13,11 @@ $icon-font-path: "/node_modules/bootstrap-sass-official/assets/fonts/";
 body {
     padding-top: 20px;
     padding-bottom: 20px;
+    background-color: #5677fc;
+}
+
+.brand {
+    color: #FFFFFF;    
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */

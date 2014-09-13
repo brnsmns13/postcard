@@ -8,7 +8,7 @@ gulp.task('css', function () {
         .pipe($.rubySass({
             style: 'expanded',
             precision: 10,
-            loadPath: ['bower_components']
+            loadPath: ['node_modules']
         }))
         .pipe(gulp.dest('dist'));
 });
@@ -26,14 +26,10 @@ gulp.task('clean', function () {
     return gulp.src(['dist'], {read: false}).pipe($.clean());
 });
 
-gulp.task('build', ['css', 'js', 'bower']);
+gulp.task('build', ['css', 'js']);
 
 gulp.task('default', ['clean'], function () {
     gulp.start('build');
-});
-
-gulp.task('bower', function() {
-    gulp.src('./bower_components/**/*.js').pipe(gulp.dest('dist/bower_components'));
 });
 
 gulp.task('watch', ['build'], function () {

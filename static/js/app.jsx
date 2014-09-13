@@ -1,15 +1,18 @@
 /** @jsx React.DOM */
 'use strict';
 
-var React = require('react'),
-    mountNode = document.getElementById('content');
+var React = window.React = require('react'),
+    Navbar = require('./components/navbar.jsx'),
+    Board = require('./components/board.jsx'),
+    mountNode = document.getElementById('postBox');
 
 var App = React.createClass({
   render: function() {
     return (
-      <div>
-        <p>Hello World</p>
-      </div>
+        <div>
+          <Navbar/>
+          <Board/>
+        </div>
     );
   }
 });

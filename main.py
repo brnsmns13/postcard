@@ -41,7 +41,7 @@ class FilterHandler(webapp2.RequestHandler):
 
         print _filter.to_json_dict()
         return
-    
+
     def post(self):
         user = users.get_current_user()
         if not user:
@@ -56,7 +56,7 @@ class FilterHandler(webapp2.RequestHandler):
         _filter = models.Filter(f_type=f_Type, f_string=f_String, tag=tag, user_id=email, board_id=ndb.Key('Board', email))
         _filter_key = _filter.put()
         return
-    
+
     def delete(self):
         user = users.get_current_user()
         if not user:
@@ -110,7 +110,7 @@ class GetMail(webapp2.RequestHandler):
         else:
             mail_list = service.users().messages().list(
                 userId='me',
-                maxResults=3,
+                maxResults=10,
                 q='in:inbox').execute(http=http)
             messages = mail_list.get('messages', [])
         board.history_id = None

@@ -186,6 +186,8 @@ class GetMail(webapp2.RequestHandler):
         return content
 
     def read_b64(self, data):
+        if not data:
+            return ''
         return base64.urlsafe_b64decode(data.encode('utf-8')) or ''
 
 

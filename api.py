@@ -126,6 +126,6 @@ endpoints = [
     ('/api/boards', BoardHandler),
     ('/api/cards', CardHandler),
     ('/api/card/create', CardCreateHandler),
-    ('/api/card/comment', CommentHandler)
+    ('/api/card/comment', CommentHandler),
     ('/api/all', BoardDataHandler)
 ]

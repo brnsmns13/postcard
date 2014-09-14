@@ -48,4 +48,4 @@ var ITEMS = [
     }
 ];
 
-React.renderComponent(<App/>, mountNode);
+React.renderComponent(<App items={ITEMS}/>, mountNode);

@@ -87,3 +87,4 @@ class Filter(ndb.Model, SerializableMixin):
     f_string = ndb.StringProperty()
     tag = ndb.StringProperty()
     user_id = ndb.StringProperty(required=True)
+    board_id = ndb.KeyProperty(required=True)

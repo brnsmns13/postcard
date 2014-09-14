@@ -26,6 +26,55 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
+class FilterHandler(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        if not user:
+            self.response.set_status(403)
+            return
+
+        tag = self.request.get('tag')
+        filtertag = models.Filter.tag
+
+        _filter = models.Filter.query(filtertag==tag).get()
+
+        print _filter.to_json_dict()
+        return
+    
+    def post(self):
+        user = users.get_current_user()
+        if not user:
+            self.response.set_status(403)
+            return
+        email = user.email()
+
+        tag = self.request.get('tag')
+        f_Type = self.request.get('f_type')
+        f_String = self.request.get('f_string')
+
+        _filter = models.Filter(f_type=f_Type, f_string=f_String, tag=tag, user_id=email, board_id=ndb.Key('Board', email))
+        _filter_key = _filter.put()
+        return
+    
+    def delete(self):
+        user = users.get_current_user()
+        if not user:
+            self.response.set_status(403)
+            return
+        tag = self.request.get('tag')
+
+        # _filter = ndb.Key(models.Filter, 5348024557502464)
+
+        # _filter.delete()
+
+        #ndb.Key('tag', tag).delete()
+        filtertag = models.Filter.tag
+        _filters = models.Filter.query(filtertag==tag).fetch()
+
+        for f in _filters:
+            f.key.delete()
+
+        return
 
 class PostBox(webapp2.RequestHandler):
     def get(self):
@@ -121,6 +170,7 @@ endpoints = [
     ('/', PostBox),
     ('/generate_user_cards', GetMail),
     ('/cards', CardsAPI),
+    ('/filter', FilterHandler),
     (decorator.callback_path, decorator.callback_handler()),
 ]
 endpoints += api_endpoints

@@ -94,5 +94,6 @@ class CardHandler(webapp2.RequestHandler):
 endpoints = [
     ('/api/boards', BoardHandler),
     ('/api/panels', PanelHandler),
-    ('/api/cards', CardHandler)
+    ('/api/cards', CardHandler),
+    ('/api/all', BoardDataHandler)
 ]

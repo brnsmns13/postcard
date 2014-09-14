@@ -5,6 +5,9 @@ var React = window.React = require('react'),
     Navbar = require('./components/navbar.jsx'),
     Board = require('./components/board.jsx'),
     mountNode = document.getElementById('postBox'),
+    ButtonToolbar = require('react-bootstrap/ButtonToolbar'),
+    ButtonGroup = require('react-bootstrap/ButtonGroup'),
+    Button = require('react-bootstrap/Button'),
     $ = require('jquery');
 
 var App = React.createClass({
@@ -23,6 +26,20 @@ var App = React.createClass({
         return (
             <div>
               <Navbar email={this.state.data.id}/>
+              <div className={"tags"}>
+                  <ButtonGroup bsSize="small">
+                    <h4>Tags: </h4>
+                  </ButtonGroup>
+                  <ButtonGroup bsSize="small">
+                    <Button>Family</Button>
+                  </ButtonGroup>
+                  <ButtonGroup bsSize="small">
+                    <Button>School</Button>
+                  </ButtonGroup>
+                  <ButtonGroup bsSize="small">
+                    <Button>Work</Button>
+                  </ButtonGroup>
+              </div>
               <Board board={this.state.data}/>
             </div>
         );

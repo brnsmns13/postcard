@@ -128,7 +128,7 @@ class GetMail(webapp2.RequestHandler):
             card.user_id = user.email()
             card.put()
         self.response.out.write(
-            '<p>Generated <b>%s</b> new cards</p><a href="/">Back to PostCard Homepage</a>' % len(messages))
+            ('<p>Generated <b>%s</b> new cards</p><a href="/">Back to PostCard Homepage</a>') % len(messages))
 
     def get_message_data(self, payload):
         m_subject = ''

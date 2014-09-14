@@ -13,6 +13,7 @@ def createDefaultBoard(user):
     panels.append(str(models.Panel(name="In Progress", user_id=email).put().id()))
     panels.append(str(models.Panel(name="Done", user_id=email).put().id()))
     board.panels = panels
+    board.tags = ['tag1', 'test_tag', 'hello']
     board.put()
     return board
 

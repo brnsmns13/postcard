@@ -30,11 +30,11 @@ var PostCardModal = React.createClass({
                 <div className={action ? "" : "hide"}>
                     <form role="form" className={"reply-form"}>
                         <div className={"form-group"}>
-                            <label for="subject-form">Subject: </label>
+                            <label htmlFor="subject-form">Subject: </label>
                             <input id="subject-form" className={"form-control"} value={"Re: " + this.props.data.subject}/>
                         </div>
                         <div className={"form-group"}>
-                            <label for="reply-form">Reply Text:</label>
+                            <label htmlFor="reply-form">Reply Text:</label>
                             <textarea id="reply-form" className={"form-control"} />
                         </div>
                         <div className={"form-group"}>

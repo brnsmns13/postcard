@@ -29,27 +29,4 @@ var App = React.createClass({
     }
 });
 
-<<<<<<< HEAD
-var ITEMS = [
-    {
-        title: "ToDo",
-        data:[
-            {text: "From: Eric Larssen\r Subject: This is a test."},
-            {text: "Two"},
-            {text: "Three"}
-        ],
-    },
-    {
-        title: "In Progress",
-        data:[{text: "Four"}]
-    },
-    {
-        title: "Done",
-        data:[]
-    }
-];
-
-React.renderComponent(<App items={ITEMS}/>, mountNode);
-=======
 React.renderComponent(<App/>, mountNode);
->>>>>>> e87e0248fe09bd328ce11ad78dee3cc355484980

@@ -13,7 +13,7 @@ var Navbar = React.createClass({
     return (
       <div className="container-fluid">
           <div className="header">
-                <h2 className="brand">PostCard
+                <h2 className="brand"><i className="fa fa-inbox"></i> PostCard: {this.props.email}
                     <ModalTrigger modal={<CreatePanelModal/>}>
                         <ButtonToolbar className="pull-right">
                             <Button bsSize="small">Add Panel</Button>

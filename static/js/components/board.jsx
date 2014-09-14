@@ -15,24 +15,26 @@ var Board = React.createClass({
             this.setState({data: response});
         }.bind(this));
     },
-    handleUserDrop: function(id, item, sourcePanelTitle) {
+    handleUserDrop: function(id, card, sourcePanelTitle) {
+        console.log(id);
         var data = this.state.data;
         var targetPanel = _.findWhere(data, {id: id});
         var sourcePanel = _.findWhere(data, {name: sourcePanelTitle});
         if (JSON.stringify(targetPanel) === JSON.stringify(sourcePanel)){
             return null;
         }
-        if(!_.findWhere(targetPanel.cards, item))
-            targetPanel.cards.push(item);
-        var index = sourcePanel.cards.indexOf(_.findWhere(sourcePanel.cards, item));
+        if(!_.findWhere(targetPanel.cards, card))
+            targetPanel.cards.push(card);
+        var index = sourcePanel.cards.indexOf(_.findWhere(sourcePanel.cards, card));
         if (index > -1) {
             sourcePanel.cards.splice(index, 1);
         }
         this.forceUpdate();
+        this.moveCard(card.id, id);
     },
 
-    moveCard: function(card, newPanel) {
-        //TODO: Make ajax
+    moveCard: function(cardId, panelId) {
+        $.post('api/cards', {card_id: cardId, panel_id: panelId}, 'json');
     },
     render: function() {
         if (this.state.data.length === 0 ){

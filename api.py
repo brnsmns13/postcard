@@ -98,7 +98,7 @@ class CardHandler(webapp2.RequestHandler):
             return
         card_id = self.request.get('card_id')
         panel_id = self.request.get('panel_id')
-        card = models.Card.get_by_id(card_id)
+        card = ndb.Key('Card', int(card_id)).get()
         panel_key = ndb.Key('Panel', panel_id)
         card.panel_id = panel_key
         card.put()

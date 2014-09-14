@@ -96,35 +96,24 @@ class GetMail(webapp2.RequestHandler):
             self.response.out.write('<html><body>%s</body></html>' % greeting)
             return
 
-        greeting = ('Welcome, %s! (<a href="%s">sign out</a>)' %
-                    (user.nickname(), users.create_logout_url('/')))
-        self.response.out.write('<b>Authed</b>' + greeting)
+        greeting = ('<a href="%s">sign out</a>' % users.create_logout_url('/'))
+        self.response.out.write('<b>Authed </b>' + greeting)
         board = models.Board.get_by_id(user.email())
         if not board:
             board = createDefaultBoard(user)
-
+            board.put()
         http = decorator.http()
-        if board.history_id:
-            mail_list = service.users().history().list(
-                userId='me',
-                startHistoryId=board.history_id).execute(http=http)
-            changes = mail_list['history'] if 'history' in mail_list else []
-            messages = list(c['messages'][0] for c in changes)
-        else:
-            mail_list = service.users().messages().list(
-                userId='me',
-                maxResults=10,
-                q='in:inbox').execute(http=http)
-            messages = mail_list.get('messages', [])
-        board.history_id = None
-        history_id = 0
+
+        mail_list = service.users().messages().list(
+            userId='me',
+            maxResults=10,
+            q='in:inbox').execute(http=http)
+        messages = mail_list.get('messages', [])
         for m in messages:
             e = service.users().messages().get(
                 userId='me',
                 id=m['id'],
                 format='full').execute(http=http)
-            if e.get('historyId') and int(e.get('historyId')) > history_id:
-                history_id = int(e.get('historyId'))
             payload = e['payload']
 
             subject, sender = self.get_message_data(payload)
@@ -138,11 +127,8 @@ class GetMail(webapp2.RequestHandler):
             card.tags = tags
             card.user_id = user.email()
             card.put()
-        if history_id:
-            board.history_id = str(history_id)
-            board.put()
         self.response.out.write(
-            '<p>Generated <b>%s</b> new cards</p>' % len(messages))
+            '<p>Generated <b>%s</b> new cards</p><a href="/">Back to PostCard Homepage</a>' % len(messages))
 
     def get_message_data(self, payload):
         m_subject = ''
@@ -222,10 +208,20 @@ class CardsAPI(webapp2.RequestHandler):
             self.response.out.write('<p>%s</p>' % c.content)
 
 
+class DeleteCardsHandler(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        cards = models.Card.query(models.Card.user_id == user.email()).fetch(20)
+        for c in cards:
+            c.key.delete()
+        self.response.out.write('<p>%d</p>' % len(cards))
+
+
 endpoints = [
     ('/', PostBox),
     ('/generate_user_cards', GetMail),
     ('/cards', CardsAPI),
+    ('/cards/delete', DeleteCardsHandler),
     ('/filter', FilterHandler),
     ('/api/send', MailHandler),
     (decorator.callback_path, decorator.callback_handler()),

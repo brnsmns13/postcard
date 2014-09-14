@@ -14,11 +14,9 @@ var Navbar = React.createClass({
       <div className="container-fluid">
           <div className="header">
                 <h2 className="brand"><i className="fa fa-inbox"></i> PostCard: {this.props.email}
-                    <ModalTrigger modal={<CreatePanelModal/>}>
-                        <ButtonToolbar className="pull-right">
-                            <Button bsSize="small">Add Panel</Button>
-                        </ButtonToolbar>
-                    </ModalTrigger>
+                    <ButtonToolbar className="pull-right">
+                        <Button bsStyle="warning" href="/generate_user_cards" bsSize="small">Generate Cards</Button>
+                    </ButtonToolbar>
                     <ModalTrigger modal={<CreateCardModal/>}>
                         <ButtonToolbar className="pull-right">
                             <Button bsSize="small">Add Card</Button>

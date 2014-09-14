@@ -162,7 +162,7 @@ class GetMail(webapp2.RequestHandler):
         for header in payload.get('headers', []):
             for f in filters:
                 if (header['name'] == f.f_type):
-                    if header['value'].contains(f.f_string):
+                    if f.f_string in header['value']:
                         tag_list.append(f.tag)
 
         return tag_list

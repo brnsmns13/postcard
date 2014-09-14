@@ -16,7 +16,6 @@ var Board = React.createClass({
         }.bind(this));
     },
     handleUserDrop: function(id, card, sourcePanelTitle) {
-        console.log(id);
         var data = this.state.data;
         var targetPanel = _.findWhere(data, {id: id});
         var sourcePanel = _.findWhere(data, {name: sourcePanelTitle});

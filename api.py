@@ -46,14 +46,14 @@ class BoardDataHandler(webapp2.RequestHandler):
         # Get Cards
         cards = models.Card.query(models.Card.user_id == user.email()).fetch(50)
 
-        data = {}
+        data = []
         for p in panels:
-            data[str(p.id)] = p.to_json_dict()
-            data[str(p.id)]['cards'] = []
-
-        for c in cards:
-            p_id = str(c.panel_id.to_int())
-            data[p_id]['cards'] += c.to_json_dict()
+            p_dict = p.to_json_dict()
+            p_dict['cards'] = []
+            for card in cards:
+                if card.panel_id.id() == str(p.key.id()):
+                    p_dict['cards'].append(card.to_json_dict())
+            data.append(p_dict)
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(data))

@@ -104,9 +104,23 @@ class CardHandler(webapp2.RequestHandler):
         card.put()
 
 
+class CommentHandler(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if not user:
+            self.response.set_status(403)
+            return
+        card_id = self.request.get('card_id')
+        comment = self.request.get('comment')
+        card = models.Card.get_by_id(int(card_id))
+        card.comments.append(comment)
+        card.put()
+
+
 endpoints = [
     ('/api/boards', BoardHandler),
     ('/api/panels', PanelHandler),
     ('/api/cards', CardHandler),
+    ('/api/cards/comment', CommentHandler)
     ('/api/all', BoardDataHandler)
 ]

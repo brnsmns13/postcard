@@ -25,13 +25,19 @@ var PostCardModal = React.createClass({
     send: function() {
         if (this.state.reply) {
             $.post("/api/send", {content: this.state.content, to: this.props.data.sender, subject: this.state.subject}, 'post');
+        }else {
+            $.post("/api/card/comment", {content: this.state.content})
         }
-        this.setState({'reply': false, 'comment': true});
+        this.setState({'reply': false, 'comment': false});
     },
     render: function() {
         var form = false;
-        if (this.state.reply || this.state.comment) {
+        var textBox = true;
+        if (this.state.reply) {
             form = true;
+            if(this.state.comment) {
+                textBox = false;
+            }
         }
         return this.transferPropsTo(
             <Modal title={this.props.data.subject} animation={false}>
@@ -41,13 +47,15 @@ var PostCardModal = React.createClass({
                 </div>
                 <div className={form ? "" : "hide"}>
                     <form role="form" className={"reply-form"}>
-                        <div className={"form-group"}>
-                            <label htmlFor="subject-form">Subject: </label>
-                            <Input id="subject-form" type="text" className={"form-control"} onChange={this.handleSubjectChange}/>
+                        <div className={textBox ? "hide" : ""}>
+                            <div className={"form-group"}>
+                                <label htmlFor="subject-form">Subject: </label>
+                                <Input id="subject-form" type="text" className={"form-control"} onChange={this.handleSubjectChange}/>
+                            </div>
                         </div>
                         <div className={"form-group"}>
-                            <label htmlFor="reply-form">Reply Text: </label>
-                            <Input id="reply-form" type="text-area" className={"form-control"} onChange={this.handleBodyChange}/>
+                            <label htmlFor="reply-form">Message Text: </label>
+                            <textarea id="reply-form" className={"form-control"} onChange={this.handleBodyChange}/>
                         </div>
                         <div className={"form-group"}>
                             <ButtonToolbar>
@@ -64,7 +72,7 @@ var PostCardModal = React.createClass({
                             <Button onClick={this.expandReply}>Reply To Sender</Button>
                         </ButtonGroup>
                         <ButtonGroup>
-                            <Button onClick={this.props.onRequestHide}>Comment</Button>
+                            <Button onClick={this.expandComment}>Comment</Button>
                         </ButtonGroup>
                         <ButtonGroup>
                             <Button onClick={this.props.onRequestHide}>Archieve</Button>

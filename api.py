@@ -32,6 +32,33 @@ class BoardHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps(board.to_json_dict()))
 
 
+class BoardDataHandler(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        if not user:
+            self.response.set_status(403)
+            return
+
+        # Get the panels
+        board = models.Board.get_by_id(user.email())
+        panels = [models.Panel.get_by_id(int(i)) for i in board.panels]
+
+        # Get Cards
+        cards = models.Card.query(models.Card.user_id == user.email()).fetch(50)
+
+        data = {}
+        for p in panels:
+            data[str(p.id)] = p.to_json_dict()
+            data[str(p.id)]['cards'] = []
+
+        for c in cards:
+            p_id = str(c.panel_id.to_int())
+            data[p_id]['cards'] += c.to_json_dict()
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps(data))
+
+
 class PanelHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
@@ -39,7 +66,7 @@ class PanelHandler(webapp2.RequestHandler):
             self.response.set_status(403)
             return
         board = models.Board.get_by_id(user.email())
-        panels = [models.Panel.get_by_id(i) for i in board.panels]
+        panels = [models.Panel.get_by_id(int(i)) for i in board.panels]
         out_panels = []
         for p in panels:
             panel_json = p.to_json_dict()

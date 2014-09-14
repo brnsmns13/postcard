@@ -10,7 +10,6 @@ var Card = React.createClass({
     drag: function(ev) {
         ev.dataTransfer.setData("draggedItem", JSON.stringify(this.props.item));
         ev.dataTransfer.setData("sourcePanel", JSON.stringify(this.props.panel));
-        console.log(this.props.panel);
     },
     render: function() {
         return (

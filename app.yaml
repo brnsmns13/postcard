@@ -6,15 +6,6 @@ threadsafe: false
 
 handlers:
 
-- url: /css
-  static_dir: css
-
-- url: /js
-  static_dir: js
-
-- url: /build
-  static_dir: build
-
 - url: /dist
   static_dir: dist
 

@@ -48,12 +48,12 @@ class BoardDataHandler(webapp2.RequestHandler):
 
         data = {}
         for p in panels:
-            data[str(p.id)] = p.to_json_dict()
-            data[str(p.id)]['cards'] = []
+            data[str(p.key.id())] = p.to_json_dict()
+            data[str(p.key.id())]['cards'] = []
 
         for c in cards:
-            p_id = str(c.panel_id.to_int())
-            data[p_id]['cards'] += c.to_json_dict()
+            p_id = c.panel_id.id()
+            data[p_id]['cards'].append(c.to_json_dict())
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(data))

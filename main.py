@@ -65,12 +65,12 @@ class GetMail(webapp2.RequestHandler):
 
             subject = self.get_message_subject(payload)
             content = self.get_message_content(payload)
-            tags = self.get_message_tags(payload)
-            card = models.Card(board_id=ndb.Key('Board', 'test'))
-            card.panel_id = ndb.Key('Panel', 'test')
+            # tags = self.get_message_tags(payload)
+            card = models.Card(board_id=board.key)
+            card.panel_id = ndb.Key('Panel', board.panels[0])
             card.subject = subject
             card.content = content
-            card.tags = tags
+            # card.tags = tags
             card.user_id = user.email()
             card.put()
         self.response.out.write(len(messages))

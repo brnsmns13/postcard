@@ -42,7 +42,6 @@ var Board = React.createClass({
         }
         var panels = {};
         this.state.data.forEach(function(panel){
-
             panels['panel-'+panel.id] = <PostCardPanel id={panel.id} title={panel.name} data={panel.cards} onUserDrop={this.handleUserDrop}/>;
         }.bind(this));
         return (

@@ -118,7 +118,6 @@ class GetMail(webapp2.RequestHandler):
             messages = mail_list.get('messages', [])
         board.history_id = None
         history_id = 0
-        print messages
         for m in messages:
             e = service.users().messages().get(
                 userId='me',

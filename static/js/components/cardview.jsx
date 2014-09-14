@@ -4,22 +4,34 @@ var React = window.React = require('react'),
     ButtonGroup = require('react-bootstrap/ButtonGroup'),
     ButtonToolbar = require('react-bootstrap/ButtonToolbar'),
     Modal = require('react-bootstrap/Modal'),
-    Input = require('react-bootstrap/Input');
+    Input = require('react-bootstrap/Input'),
+    $ = require('jquery');
 var PostCardModal = React.createClass({
     getInitialState: function(){
-        return {'action': null};
+        return {'reply': false, 'comment': false, 'subject': null, 'content': null};
+    },
+    handleSubjectChange: function (event) {
+        this.setState({'subject': event.target.value});
+    },
+    handleBodyChange: function(event) {
+        this.setState({'content': event.target.value});
     },
     expandReply: function() {
-        this.setState({'action': 'reply'});
+        this.setState({'reply': true});
     },
-    sendReply: function() {
-        this.setState({'action': null});
+    expandComment: function() {
+        this.setState({'comment': true});
+    },
+    send: function() {
+        if (this.state.reply) {
+            $.post("/api/send", {content: this.state.content, to: this.props.data.sender, subject: this.state.subject}, 'post');
+        }
+        this.setState({'reply': false, 'comment': true});
     },
     render: function() {
-        var action = false;
-        console.log(this.state.action);
-        if (this.state.action === 'reply') {
-            action = true;
+        var form = false;
+        if (this.state.reply || this.state.comment) {
+            form = true;
         }
         return this.transferPropsTo(
             <Modal title={this.props.data.subject} animation={false}>
@@ -27,20 +39,20 @@ var PostCardModal = React.createClass({
                     <h4>{"From: " + this.props.data.sender}</h4>
                     <p dangerouslySetInnerHTML={{__html: this.props.data.content}}></p>
                 </div>
-                <div className={action ? "" : "hide"}>
+                <div className={form ? "" : "hide"}>
                     <form role="form" className={"reply-form"}>
                         <div className={"form-group"}>
                             <label htmlFor="subject-form">Subject: </label>
-                            <input id="subject-form" className={"form-control"} value={"Re: " + this.props.data.subject}/>
+                            <Input id="subject-form" type="text" className={"form-control"} onChange={this.handleSubjectChange}/>
                         </div>
                         <div className={"form-group"}>
-                            <label htmlFor="reply-form">Reply Text:</label>
-                            <textarea id="reply-form" className={"form-control"} />
+                            <label htmlFor="reply-form">Reply Text: </label>
+                            <Input id="reply-form" type="text-area" className={"form-control"} onChange={this.handleBodyChange}/>
                         </div>
                         <div className={"form-group"}>
                             <ButtonToolbar>
                                 <ButtonGroup>
-                                    <Button bsStyle="primary" onClick={this.sendReply}>Send</Button>
+                                    <Button bsStyle="primary" onClick={this.send}>Send</Button>
                                 </ButtonGroup>
                             </ButtonToolbar>
                         </div>

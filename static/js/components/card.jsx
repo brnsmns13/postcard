@@ -15,7 +15,7 @@ var Card = React.createClass({
         return (
             <div draggable="true" onDragStart={this.drag}>
                 <ModalTrigger modal={<PostCardModal data={this.props.item}/>}>
-                    <Button className="post-card" bsSize="large">{this.props.item.subject}</Button>
+                    <Button className="post-card disabled" bsSize="large">{this.props.item.subject}</Button>
                 </ModalTrigger>
             </div>
         );

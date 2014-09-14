@@ -38,7 +38,7 @@ class FilterHandler(webapp2.RequestHandler):
         tag = self.request.get('tag')
         filtertag = models.Filter.tag
 
-        _filter = models.Filter.query(filtertag==tag).get()
+        _filter = models.Filter.query(filtertag == tag).get()
 
         print _filter.to_json_dict()
         return
@@ -54,8 +54,10 @@ class FilterHandler(webapp2.RequestHandler):
         f_Type = self.request.get('f_type')
         f_String = self.request.get('f_string')
 
-        _filter = models.Filter(f_type=f_Type, f_string=f_String, tag=tag, user_id=email, board_id=ndb.Key('Board', email))
-        _filter_key = _filter.put()
+        _filter = models.Filter(
+            f_type=f_Type, f_string=f_String, tag=tag, user_id=email,
+            board_id=ndb.Key('Board', email))
+        _filter.put()
         return
 
     def delete(self):
@@ -128,19 +130,20 @@ class GetMail(webapp2.RequestHandler):
 
             subject, sender = self.get_message_data(payload)
             content = self.get_message_content(payload)
-            # tags = self.get_message_tags(payload)
+            tags = self.get_message_tags(payload)
             card = models.Card(board_id=board.key)
             card.panel_id = ndb.Key('Panel', board.panels[0])
             card.subject = subject
             card.sender = sender
             card.content = content
-            # card.tags = tags
+            card.tags = tags
             card.user_id = user.email()
             card.put()
         if history_id:
             board.history_id = str(history_id)
             board.put()
-        self.response.out.write('<p>Generated %s new cards</p>' % len(messages))
+        self.response.out.write(
+            '<p>Generated <b>%s</b> new cards</p>' % len(messages))
 
     def get_message_data(self, payload):
         m_subject = ''
@@ -155,12 +158,12 @@ class GetMail(webapp2.RequestHandler):
         return m_subject, m_from
 
     def get_message_tags(self, payload):
-        filters = models.Filter.query().get()
+        filters = models.Filter.query().fetch()
         tag_list = []
-        for i in payload['headers']:
+        for header in payload.get('headers', []):
             for f in filters:
-                if (i['name'] == f['type']):
-                    tag_list.append(f['tag'])
+                if (header['name'] == f.f_type):
+                    tag_list.append(f.tag)
 
         return tag_list
 
@@ -209,13 +212,13 @@ class MailHandler(webapp2.RequestHandler):
 
 
 class CardsAPI(webapp2.RequestHandler):
-    @decorator.oauth_required
     def get(self):
         user = users.get_current_user()
         cards = models.Card.query(models.Card.user_id == user.email()).fetch(20)
         for c in cards:
             self.response.out.write('<h3>%s</h3>' % c.subject)
             self.response.out.write('<p>%s</p>' % c.content)
+
 
 endpoints = [
     ('/', PostBox),

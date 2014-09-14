@@ -59,22 +59,6 @@ class BoardDataHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps(data))
 
 
-class PanelHandler(webapp2.RequestHandler):
-    def get(self):
-        user = users.get_current_user()
-        if not user:
-            self.response.set_status(403)
-            return
-        board = models.Board.get_by_id(user.email())
-        panels = [models.Panel.get_by_id(int(i)) for i in board.panels]
-        out_panels = []
-        for p in panels:
-            panel_json = p.to_json_dict()
-            out_panels.append(panel_json)
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'panels': out_panels}))
-
-
 class CardHandler(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
@@ -104,6 +88,27 @@ class CardHandler(webapp2.RequestHandler):
         card.put()
 
 
+class CardCreateHandler(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if not user:
+            self.response.set_status(403)
+            return
+
+        board_key = ndb.Key('Board', user.email())
+        panel_key = ndb.Key('Panel', self.request.get('panel_id'))
+        card = models.Card(
+            board_id=board_key,
+            panel_id=panel_key,
+            user_id=user.email(),
+            sender=user.email(),
+            subject=self.request.get('subject'),
+            content=self.request.get('content'),
+            tags=[self.request.get('tag')],
+        )
+        card.put()
+
+
 class CommentHandler(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
@@ -119,8 +124,8 @@ class CommentHandler(webapp2.RequestHandler):
 
 endpoints = [
     ('/api/boards', BoardHandler),
-    ('/api/panels', PanelHandler),
     ('/api/cards', CardHandler),
-    ('/api/cards/comment', CommentHandler)
+    ('/api/card/create', CardCreateHandler),
+    ('/api/card/comment', CommentHandler)
     ('/api/all', BoardDataHandler)
 ]

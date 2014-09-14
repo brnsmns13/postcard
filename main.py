@@ -52,33 +52,57 @@ class GetMail(webapp2.RequestHandler):
             board = createDefaultBoard(user)
 
         http = decorator.http()
-        messages = service.users().messages().list(
-            userId='me',
-            maxResults=3,
-            q='in:inbox').execute(http=http)
-        for m in messages['messages']:
+        if board.history_id:
+            mail_list = service.users().history().list(
+                userId='me',
+                startHistoryId=board.history_id).execute(http=http)
+            changes = mail_list['history'] if 'history' in mail_list else []
+            messages = list(c['messages'][0] for c in changes)
+        else:
+            mail_list = service.users().messages().list(
+                userId='me',
+                maxResults=3,
+                q='in:inbox').execute(http=http)
+            messages = mail_list.get('messages', [])
+        board.history_id = None
+        history_id = 0
+        print messages
+        for m in messages:
             e = service.users().messages().get(
                 userId='me',
                 id=m['id'],
                 format='full').execute(http=http)
+            if e.get('historyId') and int(e.get('historyId')) > history_id:
+                history_id = int(e.get('historyId'))
             payload = e['payload']
 
-            subject = self.get_message_subject(payload)
+            subject, sender = self.get_message_data(payload)
             content = self.get_message_content(payload)
             # tags = self.get_message_tags(payload)
             card = models.Card(board_id=board.key)
             card.panel_id = ndb.Key('Panel', board.panels[0])
             card.subject = subject
+            card.sender = sender
             card.content = content
             # card.tags = tags
             card.user_id = user.email()
             card.put()
-        self.response.out.write(len(messages))
+        if history_id:
+            board.history_id = str(history_id)
+            board.put()
+        self.response.out.write('<p>Generated %s new cards</p>' % len(messages))
 
-    def get_message_subject(self, payload):
+    def get_message_data(self, payload):
+        m_subject = ''
+        m_from = ''
         for h in payload['headers']:
             if h.get('name') == 'Subject':
-                return h.get('value')
+                m_subject = h.get('value')
+                continue
+            elif h.get('name') == 'From':
+                m_from = h.get('value')
+                continue
+        return m_subject, m_from
 
     def get_message_tags(self, payload):
         filters = models.Filter.query().get()
@@ -96,11 +120,9 @@ class GetMail(webapp2.RequestHandler):
         if payload['body'].get('size') > 0:
             content += self.read_b64(payload['body'].get('data'))
 
-        for part in payload['parts']:
-            logging.info('part mimeType: ' + part['mimeType'])
+        for part in payload.get('parts', []):
             if part['mimeType'] == 'text/plain':
                 content += self.read_b64(part['body'].get('data'))
-                logging.info('Content: ' + content)
 
             elif part['mimeType'] == 'text/html':
                 content += self.read_b64(part['body'].get('data'))

@@ -65,12 +65,14 @@ class Board(ndb.Model, SerializableMixin):
     name = ndb.StringProperty()
     tags = ndb.StringProperty(repeated=True)
     panels = ndb.StringProperty(repeated=True)
+    history_id = ndb.StringProperty()
 
 
 class Card(ndb.Model, SerializableMixin):
     board_id = ndb.KeyProperty(required=True)
     panel_id = ndb.KeyProperty(required=True)
     subject = ndb.StringProperty()
+    sender = ndb.StringProperty()
     content = ndb.TextProperty()
     tags = ndb.StringProperty(repeated=True)
     comments = ndb.StringProperty(repeated=True)

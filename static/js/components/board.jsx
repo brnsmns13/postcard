@@ -3,15 +3,21 @@
 
 var React = window.React = require('react'),
     PostCardPanel = require('./panel.jsx'),
+    $ = require('jquery'),
     _ = require('lodash');
 
 var Board = React.createClass({
     getInitialState: function() {
-        return {data: this.props.data};
+        return {board: this.props.board, data: []};
+    },
+    componentDidMount: function() {
+        $.getJSON('api/', function(response){
+            console.log(response);
+        }.bind(this));
     },
     handleUserDrop: function(id, item, sourcePanelTitle) {
-        var targetPanel = this.state.data[id];
-        var sourcePanel = _.findWhere(this.state.data, {title: sourcePanelTitle});
+        var targetPanel = this.state.cards[id];
+        var sourcePanel = _.findWhere(this.state.cards, {title: sourcePanelTitle});
         if (JSON.stringify(targetPanel) === JSON.stringify(sourcePanel)){
             return null;
         }
@@ -23,10 +29,14 @@ var Board = React.createClass({
         }
         this.forceUpdate();
     },
+
     moveCard: function(card, newPanel) {
         //TODO: Make ajax
     },
     render: function() {
+        if (this.state.data.length === 0 ){
+            return null;
+        }
         var panels = {};
         this.props.data.map(function(panel, i){
             panels['panel-'+i] = <PostCardPanel id={i} title={panel.title} data={panel.data} onUserDrop={this.handleUserDrop}/>;

@@ -12,23 +12,24 @@ var App = React.createClass({
         return {data: []};
     },
     componentDidMount: function(){
-        this.fetchBoards();
+        this.fetchBoard();
     },
     fetchBoard: function(){
-        $.getJSON('/',function(){
-
-        });
+        $.getJSON('/api/boards', function(response){
+            this.setState({data: response});
+        }.bind(this));
     },
     render: function() {
         return (
             <div>
-              <Navbar/>
-              <Board data={this.props.items}/>
+              <Navbar email={this.state.data.id}/>
+              <Board board={this.state.data}/>
             </div>
         );
     }
 });
 
+<<<<<<< HEAD
 var ITEMS = [
     {
         title: "ToDo",
@@ -49,3 +50,6 @@ var ITEMS = [
 ];
 
 React.renderComponent(<App items={ITEMS}/>, mountNode);
+=======
+React.renderComponent(<App/>, mountNode);
+>>>>>>> e87e0248fe09bd328ce11ad78dee3cc355484980

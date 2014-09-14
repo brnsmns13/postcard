@@ -4,6 +4,7 @@ import jinja2
 import webapp2
 import os
 import json
+from email.mime.text import MIMEText
 
 from apiclient.discovery import build
 from google.appengine.api import users
@@ -185,6 +186,28 @@ class GetMail(webapp2.RequestHandler):
         return base64.urlsafe_b64decode(data.encode('utf-8')) or ''
 
 
+class MailHandler(webapp2.RequestHandler):
+    @decorator.oauth_required
+    def post(self):
+        user = users.get_current_user()
+        if not user:
+            greeting = ('<a href="%s">Sign in</a>.' %
+                        users.create_login_url('/'))
+            self.response.out.write('<html><body>%s</body></html>' % greeting)
+            return
+
+        http = decorator.http()
+        message = MIMEText(self.request.get('content'))
+        message['from'] = user.email()
+        message['subject'] = self.request.get('subject')
+        message['to'] = self.request.get('to')
+
+        raw_message = {'raw': base64.urlsafe_b64encode(message.as_string())}
+        sent = service.users().messages().send(
+            userId='me', body=raw_message).execute(http=http)
+        logging.info('Sent id: ' + sent['id'])
+
+
 class CardsAPI(webapp2.RequestHandler):
     @decorator.oauth_required
     def get(self):
@@ -199,6 +222,7 @@ endpoints = [
     ('/generate_user_cards', GetMail),
     ('/cards', CardsAPI),
     ('/filter', FilterHandler),
+    ('/api/send', MailHandler),
     (decorator.callback_path, decorator.callback_handler()),
 ]
 endpoints += api_endpoints
